@@ -437,7 +437,7 @@ SMODS.Joker {
                     return true
                 end)
             }))
-            return nil, true -- This is for Joker retrigger purposes
+            return nil, true 
         end
     end,
 }
@@ -477,7 +477,7 @@ SMODS.Joker {
                     return true
                 end)
             }))
-            return nil, true -- This is for Joker retrigger purposes
+            return nil, true 
         end
     end,
 }
@@ -544,7 +544,7 @@ SMODS.Joker {
     atlas = 'testsub',
     blueprint_compat = true,
     rarity = 3,
-    cost = 1, --- this next part is from Cryptid! Thanks Cryptid! ---
+    cost = 1, 
 config = {
 		extra = {
 			slots = 1,
@@ -565,7 +565,6 @@ config = {
     remove_from_deck = function(self, card, from_debuff)
         G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.slots
     end,
---- idea = Xero01", art  = "Linus Goof Balls", code = Math
 }
 
 
@@ -682,4 +681,5 @@ SMODS.Tag {
             return true
         end
     end
+
 }
