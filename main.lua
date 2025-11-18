@@ -61,6 +61,7 @@ SMODS.Joker{
     atlas = 'revar',
     rarity = 2,
     blueprint_compat = false,
+    eternal_compat = false,
     cost = 6,
     config = { extra = { price = 10 } },
     loc_vars = function(self, info_queue, card)
@@ -89,7 +90,7 @@ SMODS.Joker{
     key = "arewt",
     loc_txt = { name = 'Arewt',
     text = { 'This Joker gains',
-    '{C:chips}+30{} Chips if played hand',
+    '{C:chips}+20{} Chips if played hand',
     'contains a {C:attention}Flush',
     '{C:inactive}(Currently {C:chips}+#1#{} Chips{C:inactive})'}
     },
@@ -98,7 +99,7 @@ SMODS.Joker{
     rarity = 1,
     blueprint_compat = true,
     cost = 5,
-    config = { extra = { chips = 0, chip_mod = 30, type = 'Flush' } },
+    config = { extra = { chips = 0, chip_mod = 20, type = 'Flush' } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.chips, card.ability.extra.chip_mod, localize(card.ability.extra.type, 'poker_hands') } }
     end,
@@ -238,14 +239,14 @@ SMODS.Joker{
     'this Joker {C:red}destroys',
     '{C:red}every playing card{}',
     '{C:red}on screen{} then gives',
-    '{C:money}$2{} per destroyed card' } ,
+    '{C:money}$3{} per destroyed card' } ,
     },
     pos = { x = 2, y = 0 },
     atlas = 'tort',
     rarity = 3,
     blueprint_compat = false,
     cost = 7,
-    config = { extra = { dollars = 2 } },
+    config = { extra = { dollars = 3 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.dollars } }
     end,
@@ -362,8 +363,8 @@ SMODS.Joker {
     atlas = 'snad',
     blueprint_compat = true,
     perishable_compat = false,
-    rarity = 3,
-    cost = 7,
+    rarity = 2,
+    cost = 6,
    calculate = function(self, card, context)
         if context.mod_probability and not context.blueprint then
             return {
@@ -419,8 +420,8 @@ SMODS.Joker {
     pos = { x = 1, y = 2 },
     atlas = 'aaron',
     blueprint_compat = true,
-    rarity = 2,
-    cost = 6,
+    rarity = 1,
+    cost = 4,
     config = { extra = { odds = 4 } },
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = 'tag_double', set = 'Tag' }
@@ -437,7 +438,7 @@ SMODS.Joker {
                     return true
                 end)
             }))
-            return nil, true 
+            return nil, true -- This is for Joker retrigger purposes
         end
     end,
 }
@@ -459,8 +460,8 @@ SMODS.Joker {
     pos = { x = 0, y = 2 },
     atlas = 'baronscientist',
     blueprint_compat = true,
-    rarity = 2,
-    cost = 6,
+    rarity = 1,
+    cost = 4,
     config = { extra = { odds = 8 } },
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = {set = "Tag", key = 'tag_clo_cloner' }
@@ -477,7 +478,7 @@ SMODS.Joker {
                     return true
                 end)
             }))
-            return nil, true 
+            return nil, true -- This is for Joker retrigger purposes
         end
     end,
 }
@@ -543,6 +544,8 @@ SMODS.Joker {
     pos = { x = 5, y = 1 },
     atlas = 'testsub',
     blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = false,
     rarity = 3,
     cost = 1, 
 config = {
@@ -681,5 +684,44 @@ SMODS.Tag {
             return true
         end
     end
+}
+
+SMODS.Atlas({
+    key = "tagsub",
+    path = 'tags.png',
+    px = 32,
+    py = 32,
+})
+
+SMODS.Tag {
+    key = "tagsub",
+    atlas = 'tagsub',
+    pos = { x = 1, y = 0 },
+    loc_txt = { 
+        name = 'TagSubjection',
+        text = { 'Creates {C:attention}TestSubjoker' }
+    },
+    min_ante = 1,
+    config = { spawn_jokers = 1 },
+    loc_vars = function(self, info_queue, tag)
+        return { vars = { tag.config.spawn_jokers } }
+    end,
+    apply = function(self, tag, context)
+        if context.type == 'immediate' then
+            local lock = tag.ID
+            G.CONTROLLER.locks[lock] = true
+            tag:yep('+', G.C.PURPLE, function()
+                local card = create_card("Joker", G.jokers, nil, nil, nil, nil, "j_clo_testsub")
+                card:add_to_deck()
+                G.jokers:emplace(card)
+                G.CONTROLLER.locks[lock] = nil
+                return true
+            end)
+            tag.triggered = true
+            return true
+        end
+    end
+}
 
 }
+
