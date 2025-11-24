@@ -1,8 +1,9 @@
 Oh, what fun! A Balatro Mod!
 
 All of the changes are:
-- 15 new Jokers, including one legendary!
+- A whole buncha new Jokers, including one legendary!
 - One new tag!
+- One new poker hand/planet card!
 - That's it!
 
 I might add to this in the future, but for the time being, I need to do my homework or literally anything else other than program this silly mod
