@@ -1,4 +1,3 @@
-
 --- This is spaghetti code. This is my first attempt at proper coding. There is probably a comical amount of things wrong here. ---
 --- Special thanks to the Discord Server, they were a huge help (as much as they made fun of me sometimes) ---
 --- HUGE thanks to VanillaRemade and it's contributors, since most of this code is copied and frankensteined together based on what they made. ---
@@ -355,8 +354,8 @@ SMODS.Atlas({
 SMODS.Joker {
     key = "snad",
     loc_txt = { name = 'Snad',
-    text = { 'Sets all listed',
-    'probabilities to 0',
+    text = { 'Sets all {C:attention}listed{}',
+    '{C:green,E:2}probabilities{} to 0',
     '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}0 in 3{C:inactive})'}
     },
     pos = { x = 4, y = 2 },
@@ -570,10 +569,6 @@ config = {
     end,
 }
 
-
-
-
-
 SMODS.Atlas({
     key = "kard",
     path = 'jokers.png',
@@ -623,7 +618,7 @@ SMODS.Joker{
                     end
                 }))
                 return {
-                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.xmult + 1 } },
+                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.xmult + (sliced_card.sell_cost or 0) * 0.5 } },
                     colour = G.C.UI.TEXT_DARK,
                     no_juice = true
                 }
@@ -633,6 +628,384 @@ SMODS.Joker{
         if context.joker_main then
             return {
                 xmult = card.ability.extra.xmult
+            }
+        end
+    end
+}
+
+
+
+SMODS.Atlas({
+    key = "firstman",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker {
+    key = "firstman",
+    loc_txt = { name = 'Joker Firstman',
+    text = { 'All played Queens give',
+    '{C:money}$1{} when scored',
+    '{C:inactive}To save for us, my darling.'}
+    },
+    pos = { x = 0, y = 3 },
+    atlas = 'firstman',
+    blueprint_compat = true,
+    rarity = 1,
+    cost = 3, 
+    config = { extra = { dollars = 1 } },
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and
+            context.other_card:get_id() == 12 then
+            G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.dollars
+            return {
+                dollars = card.ability.extra.dollars,
+                func = function() 
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.GAME.dollar_buffer = 0
+                            return true
+                        end
+                    }))
+                end
+            }
+        end
+    end
+}
+
+SMODS.Atlas({
+    key = "franklinjoker",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker {
+    key = "franklinjoker",
+    loc_txt = { name = 'Benjamin Franklin',
+    text = { 'Invents a move called',
+    '{C:attention}The Franklin{}'}
+    },
+    pos = { x = 2, y = 3 },
+    atlas = 'franklinjoker',
+    blueprint_compat = false,
+    rarity = 3,
+    cost = 7,
+}
+
+SMODS.PokerHand {
+    key = "franklin",
+    mult = 8,
+    chips = 100,
+    l_mult = 15,
+    l_chips = 150,
+    visible = false,
+    above_hand = 'Straight Flush',
+    example = {
+        { 'S_Q', true }, 
+        { 'S_9', false },
+        { 'H_4', false },
+        { 'H_6', false },
+        { 'D_2', false }
+    },
+
+    evaluate = function(parts, hand)
+        if next(SMODS.find_card("j_clo_franklinjoker")) then
+            return parts._highest or nil
+        end
+        return false
+end,
+    loc_txt = {
+        name = "The Franklin",
+        description = {
+            "See?"
+        }
+    }
+}
+
+SMODS.Atlas({
+    key = "franklinplanet",
+    path = 'consumables.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Consumable {
+    key = "franklinplanet",
+    loc_txt = { 
+        name = 'Franklin',
+        text = { '({V:1}lvl.#1#{}) Level up',
+    '{C:attention}The Franklin',
+    '{C:mult}+15{} Mult and',
+    '{C:chips}+200{} chips'}
+    },
+    set = 'Planet',
+    cost = 6,
+    atlas = 'franklinplanet', pos = { x = 8, y = 3 },
+    config = { hand_type = 'clo_franklin', softlock = true },
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                G.GAME.hands[card.ability.hand_type].level,
+                localize(card.ability.hand_type, 'poker_hands'),
+                G.GAME.hands[card.ability.hand_type].l_mult,
+                G.GAME.hands[card.ability.hand_type].l_chips,
+                colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
+            }
+        }
+    end,
+    set_card_type_badge = function(self, card, badges)
+        badges[#badges + 1] = create_badge(localize('k_planet_q'),
+            get_type_colour(card.config.center or card.config, card), SMODS.ConsumableTypes.Planet.text_colour,
+            1.2)
+    end
+}
+
+SMODS.Atlas({
+    key = "dapup",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker{
+    key = "dapup",
+    loc_txt = {
+        name = 'Dap Up Attempt',
+        text = {
+            '{C:green}#1# in 2{} chance to',
+            'disable the effect of the',
+            'current {C:attention}Boss Blind'
+        },
+    },
+    pos = { x = 0, y = 4 },
+    atlas = 'dapup',
+    rarity = 2,
+    blueprint_compat = false,
+    cost = 6,
+    config = { extra = { odds = 2 } },
+
+    loc_vars = function(self, info_queue, card)
+        local numerator, denominator =
+            SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'clo_dapup')
+        return { vars = { numerator, denominator } }
+    end,
+    calculate = function(self, card, context)
+        if context.setting_blind
+        and not context.blueprint
+        and context.blind.boss
+        and SMODS.pseudorandom_probability(card, 'clo_dapup', 1, card.ability.extra.odds)
+        then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.GAME.blind:disable()
+                            play_sound('timpani')
+                            delay(0.4)
+                            return true
+                        end
+                    }))
+                    SMODS.calculate_effect({ message = localize('ph_boss_disabled') }, card)
+                    return true
+                end
+            }))
+            return nil, true
+        end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        if G.GAME.blind and G.GAME.blind.boss and not G.GAME.blind.disabled then
+            G.GAME.blind:disable()
+            play_sound('timpani')
+            SMODS.calculate_effect({ message = localize('ph_boss_disabled') }, card)
+        end
+    end
+}
+
+SMODS.Atlas({
+    key = "luigi",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker {
+    key = "luigi",
+    loc_txt = {
+        name = 'Find Luigi',
+        text = {
+            'One random card in',
+            'your deck will give',
+            '{X:mult,C:white} X5 {} Mult when scored',
+            '{s:0.8}Card changes every round'
+        },
+    },
+    pos = { x = 1, y = 4 },
+    atlas = 'luigi',
+    rarity = 3,
+    blueprint_compat = true,
+    cost = 5,
+    config = { extra = { xmult = 5 } },
+    loc_vars = function(self, info_queue, card)
+        local idol_card = G.GAME.current_round.clo_idol_card or { rank = 'Ace', suit = 'Spades' }
+        return { vars = { card.ability.extra.xmult, localize(idol_card.rank, 'ranks'), localize(idol_card.suit, 'suits_plural'), colours = { G.C.SUITS[idol_card.suit] } } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and
+            context.other_card:get_id() == G.GAME.current_round.clo_idol_card.id and
+            context.other_card:is_suit(G.GAME.current_round.clo_idol_card.suit) then
+            return {
+                xmult = card.ability.extra.xmult
+            }
+        end
+    end
+}
+
+local function reset_clo_idol_card()
+    G.GAME.current_round.clo_idol_card = { rank = 'Ace', suit = 'Spades' }
+    local valid_idol_cards = {}
+    for _, playing_card in ipairs(G.playing_cards) do
+        if not SMODS.has_no_suit(playing_card) and not SMODS.has_no_rank(playing_card) then
+            valid_idol_cards[#valid_idol_cards + 1] = playing_card
+        end
+    end
+    local idol_card = pseudorandom_element(valid_idol_cards, 'clo_idol' .. G.GAME.round_resets.ante)
+    if idol_card then
+        G.GAME.current_round.clo_idol_card.rank = idol_card.base.value
+        G.GAME.current_round.clo_idol_card.suit = idol_card.base.suit
+        G.GAME.current_round.clo_idol_card.id = idol_card.base.id
+    end
+end
+
+SMODS.Sound({
+    key = "sonichello",
+    path = 'SonicHello.ogg',
+})
+
+SMODS.Atlas({
+    key = "hello",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker{
+    key = "hello",
+    loc_txt = { name = 'Hello?',
+    text = { 'Played cards with',
+    '{C:clubs}Club{} suit become',
+    '{C:attention}Foil Cards{} when scored'},
+    },
+    pos = { x = 1, y = 5 },
+    atlas = 'hello',
+    blueprint_compat = false,
+    rarity = 1,
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_foil
+    end,
+    calculate = function(self, card, context)
+        if context.before and not context.blueprint then
+            local clubs = 0
+            for _, scored_card in ipairs(context.scoring_hand) do
+                if scored_card:is_suit("Clubs") then
+                    clubs = clubs + 1
+                    scored_card:set_edition('e_foil', nil, true)
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            scored_card:juice_up()
+                            return true
+                        end
+                    }))
+                end
+            end
+            if clubs > 0 then
+                return {
+                    message = 'Hello?',
+                    colour = G.C.BLUE,
+                    play_sound('clo_sonichello', 0.96 + math.random() * 0.08)
+                }
+            end
+        end
+    end
+}
+
+SMODS.Atlas({
+    key = "maclunkey",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker{
+    key = "maclunkey",
+    loc_txt = { 
+        name = 'Maclunkey',
+        text = { 
+            '{X:mult,C:white} X3 {} Mult',
+            '{C:green}1 in 2{} chance to',
+            '{C:red,E:2}not shoot first'
+        },
+    },
+    pos = { x = 3, y = 4 },
+    atlas = 'maclunkey',
+    blueprint_compat = true,
+    rarity = 1,
+    cost = 4,
+    config = { extra = { odds = 2, Xmult = 2 } },
+
+    loc_vars = function(self, info_queue, card)
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'clo_maclunkey')
+        return { vars = { numerator, denominator } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+            if SMODS.pseudorandom_probability(card, 'clo_maclunkey', 1, card.ability.extra.odds) then
+                SMODS.destroy_cards(card, nil, nil, true)
+                return {
+                    message = 'Shot!',
+                    colour = G.C.FILTER
+                }
+            else
+                return {
+                    message = localize('k_safe_ex')
+                }
+            end
+        end
+        if context.joker_main then
+            return {
+                xmult = card.ability.extra.Xmult
+            }
+        end
+    end,
+}
+
+SMODS.Atlas({
+    key = "smileyplush",
+    path = 'jokers.png',
+    px = 71,
+    py = 95,
+})
+
+SMODS.Joker {
+    key = "smileyplush",
+    loc_txt = { name = 'Smiley Face Plush',
+    text = { 'Played {C:attention}face{} cards',
+    'give {X:mult,C:white}X1.3{} Mult',
+    'when scored'}
+    },
+    pos = { x = 1, y = 3 },
+    atlas = 'smileyplush',
+    blueprint_compat = true,
+    perishable_compat = false,
+    rarity = 2,
+    cost = 6,
+    config = { extra = { Xmult = 1.3 } },
+   calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and context.other_card:is_face() then
+            return {
+                xmult = card.ability.extra.Xmult
             }
         end
     end
@@ -651,9 +1024,13 @@ SMODS.Tag {
     pos = { x = 0, y = 0 },
     loc_txt = { 
         name = 'Cloned Tag',
-        text = { 'Duplicates a random {C:attention}Joker',
-        'between shops and next blind',
-    '{C:inactive}(Must have room)'}
+        text = { 'Duplicates a', 
+        'random {C:attention}Joker',
+        'between shops', 
+        'and next blind',
+    '{C:inactive}(Must have room)',
+    '{C:inactive}(Removes Negative', 
+    '{C:inactive}from copy)'}
     },
     min_ante = 2,
     config = { spawn_jokers = 1 },
@@ -723,5 +1100,11 @@ SMODS.Tag {
     end
 }
 
+function SMODS.current_mod.reset_game_globals(run_start)
+    reset_clo_idol_card()    
+end
+
+
 }
+
 
