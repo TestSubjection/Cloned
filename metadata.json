@@ -1,0 +1,17 @@
+{
+	"id": "clonedlatro",
+	"name": "Clolatro",
+	"display_name": "Cloned",
+	"author": ["TestSubjection"],
+	"description": "A new page of Jokers based on my OCs, including a Legendary!",
+	"prefix": "clo",
+	"main_file": "main.lua",
+	"priority": 69,
+	"badge_colour": "1f0b8c",
+	"badge_text_colour": "964ad4",
+	"version": "0.2.0",
+	"dependencies": {
+		"Steamodded": ">=1.*",
+		"Lovely": ">=0.6"
+	}
+}
