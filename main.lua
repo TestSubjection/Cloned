@@ -1,3 +1,4 @@
+
 --- This is spaghetti code. This is my first attempt at proper coding. There is probably a comical amount of things wrong here. ---
 --- Special thanks to the Discord Server, they were a huge help (as much as they made fun of me sometimes) ---
 --- HUGE thanks to VanillaRemade and it's contributors, since most of this code is copied and frankensteined together based on what they made. ---
@@ -1103,8 +1104,4 @@ SMODS.Tag {
 function SMODS.current_mod.reset_game_globals(run_start)
     reset_clo_idol_card()    
 end
-
-
-}
-
 
