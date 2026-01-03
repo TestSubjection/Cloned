@@ -3,7 +3,7 @@
 	"name": "Clolatro",
 	"display_name": "Cloned",
 	"author": ["TestSubjection"],
-	"description": "New Jokers! Some other things! Wow!!",
+	"description": "New Jokers! Some other things! Wow!! \nCredits:\nDroll Dolly Character Design: cheetie7753 (TikTok)\n Alien in Paris Character Design: billiejnotten (Instagram)",
 	"prefix": "clo",
 	"main_file": "main.lua",
 	"priority": 69,
@@ -16,4 +16,5 @@
 		
 	}
 	
+
 }
