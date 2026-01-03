@@ -3,7 +3,7 @@
 	"name": "Clolatro",
 	"display_name": "Cloned",
 	"author": ["TestSubjection"],
-	"description": "A new page of Jokers based on my OCs, including a Legendary!",
+	"description": "New Jokers! Some other things! Wow!!",
 	"prefix": "clo",
 	"main_file": "main.lua",
 	"priority": 69,
@@ -13,5 +13,7 @@
 	"dependencies": {
 		"Steamodded": ">=1.*",
 		"Lovely": ">=0.6"
+		
 	}
+	
 }
