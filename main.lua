@@ -508,7 +508,7 @@ SMODS.Joker {
     rarity = 2,
     cost = 6,
     calculate = function(self, card, context)
-        if context.before and #context.scoring_hand == 1 and then
+        if context.before and #context.scoring_hand == 1 then
             if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                 G.E_MANAGER:add_event(Event({
